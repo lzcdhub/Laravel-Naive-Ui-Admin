@@ -5,27 +5,35 @@
 若遇到严重的bug，则需要创建hotfix分支来解决bug，修改bug后再merge到develop分支和master分支。
 上图是分支管理的思想。
 下面用git命令行简单的走一走上图的流程：
+
 1）创建开发(develop)分支
 git branch develop
+
 2）切换develop分支
 git checkout develop
+
 3) 开发feature1功能，那么需要创建feature1分支
 git branch feature1
 在该分支进行开发
+
 4）开发feature2功能，那么需要创建feature2分支
 git branch feature2
 在该分支进行开发
+
 5） 切换develop分支，并merge
 git checkout develop
 git merge feature1
 git merge feature2
+
 6) 若遇到紧急问题的话，切换master分支再新建hotfix分支
 git checkout master
 git branch hotfix
+
 7） 合并到master分支和develop分支
 git checkout master
 git merge hotfix
 git checkout develop
 git merge hotfix
+
 8) 在master分支上添加标签
 git tag -a v0.1.1
