@@ -1,9 +1,14 @@
-![mahua](mahua-logo.jpg)
-##Laravel Naive Ui Admin
+#Laravel Naive Ui Admin
+
+- 下载后 安装larave和npm的依赖包
+- test.sql 是基础数据库 laravel数据库迁移完后 把test.sql导入进去
 
 
-* 下载后 安装larave和npm的依赖包
-* test.sql 是基础数据库 laravel数据库迁移完后 把test.sql导入进去
+#### 安装laravel
+- composer install or update
+- cp .env.example .env
+- php artisan key:generate
+- php artisan storage:link
 
 ##有问题反馈
 * 
