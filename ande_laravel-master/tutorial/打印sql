@@ -1,0 +1,3 @@
+DB::connection()->enableQueryLog();     // 开启查询日志
+$logs = DB::getQueryLog();   // 获取查询日志
+dd($logs);

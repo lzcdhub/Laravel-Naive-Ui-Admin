@@ -1,0 +1,195 @@
+资源控制器
+Laravel 的资源控制器可以让我们很便捷地构建基于资源的 RESTful 控制器，例如，你可能想要在应用中创建一个控制器，用于处理关于文章存储的 HTTP 请求，使用 Artisan 命令 make:controller，我们可以快速创建这样的控制器：
+
+php artisan make:controller PostController --resource
+该 Artisan 命令将会生成一个控制器文件 app/Http/Controllers/PostController.php，这个控制器包含了每一个资源操作对应的方法：
+
+<?php
+
+namespace AppHttpControllers;
+
+use IlluminateHttpRequest;
+
+class PostController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return IlluminateHttpResponse
+     */
+    public function index()
+    {
+        //
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return IlluminateHttpResponse
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  IlluminateHttpRequest  $request
+     * @return IlluminateHttpResponse
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return IlluminateHttpResponse
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return IlluminateHttpResponse
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  IlluminateHttpRequest  $request
+     * @param  int  $id
+     * @return IlluminateHttpResponse
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return IlluminateHttpResponse
+     */
+    public function destroy($id)
+    {
+        //
+    }
+}
+接下来，可以通过 resource 方法为该控制器注册一个资源路由：
+
+Route::resource('posts', 'PostController');
+这个路由声明包含了处理文章资源对应动作的多个路由，相应地，Artisan
+生成的控制器也已经为这些动作设置了对应的处理方法。
+
+你可以通过传递数组到 resources 方法从而一次注册多个资源控制器：
+
+Route::resources([
+    'photos' => 'PhotoController',
+    'posts' => 'PostController'
+]);
+资源控制器处理的动作
+
+请求方式	URI路径	控制器方法	路由名称	作用
+GET	/posts	index	posts.index	获取所有列表的页面　
+GET	/posts/create	create	posts.create	创建数据的页面
+POST	/posts	store	posts.store	提交创建的数据
+GET	/posts/{post}	show	posts.show	获取单个数据的页面
+GET	/posts/{post}/edit	edit	posts.edit	获取要修改数据的页面
+PUT/PATCH	/posts/{post}	update	posts.update	提交要修改数据
+DELETE	/posts/{post}	destroy	posts.destroy	删除数据
+指定资源模型
+
+如果你使用了路由模型绑定，并且想要在资源控制器的方法中对模型实例进行依赖注入，可以在生成控制器的使用使用 --model 选项：
+
+php artisan make:controller PostController --resource --model=Post
+不过学院君个人不推荐使用这种模型绑定，因为这里会涉及到对模型数据的缓存逻辑，为性能考虑，我们不想总是从数据库取数据，所以，尽量保持单个功能的简单和单一职责，让开发者自己去组装需要的功能，这是 Unix 奉行的设计哲学，也是我们在系统设计的时候需要考量的重要因素。
+
+伪造表单方法
+
+由于 HTML 表单不支持发起 PUT、PATCH 和 DELETE 请求，需要添加一个隐藏的 _method 字段来伪造 HTTP 请求方式，Blade 指令 @method 可以帮我们做这件事：
+
+<form action="/foo/bar" method="POST">
+    @method('PUT')
+</form>
+部分资源路由
+声明资源路由时可以指定该路由处理的动作子集：
+
+Route::resource('post', 'PostController', ['only' =>
+    ['index', 'show']
+]);
+
+Route::resource('post', 'PostController', ['except' =>
+    ['create', 'store', 'update', 'destroy']
+]);
+API 资源路由
+
+声明被 API 消费的资源路由时，你可能需要排除展示 HTML 模板的路由，如 create 和 edit，为了方便起见，Laravel 提供了 apiResource 方法自动排除这两个路由：
+
+Route::apiResource('post', 'PostController');
+同样，你可以传递数组到 apiResources 方法从而一次注册多个 API 资源控制器：
+
+Route::apiResources([
+    'posts' => 'PostController',
+    'photos' => 'PhotoController'
+]);
+要想快速生成不包含 create 或 edit 方法的 API 资源控制器，可以在执行 make:controller 命令时使用 --api 开关：
+
+php artisan make:controller API/PostController --api
+命名资源路由
+默认情况下，所有资源控制器动作都有一个路由名称，不过，我们可以通过传入 names 数组来覆盖这些默认的名称：
+
+Route::resource('post', 'PostController', ['names' =>
+    ['create' => 'post.build']
+]);
+命名资源路由参数
+默认情况下，Route::resource 将会基于资源名称的单数格式为资源路由创建路由参数，你可以通过在选项数组中传递 parameters 来覆盖这一默认设置。 parameters 是资源名称和参数名称的关联数组：
+
+Route::resource('user', 'AdminUserController', ['parameters' => [
+    'user' => 'admin_user'
+]]);
+上面的示例代码会为资源的 show 路由生成如下 URL：
+
+/user/{admin_user}
+本地化资源 URI
+默认情况下，Route::resource 创建的资源 URI 是英文风格的，如果你需要本地化 create 和 edit 请求路由，可以使用 Route::resourceVerbs 方法。该功能可以在 AppServiceProvider 的 boot 方法中实现：
+
+use IlluminateSupportFacadesRoute;
+
+/**
+ * Bootstrap any application services.
+ *
+ * @return void
+ */
+public function boot()
+{
+    Route::resourceVerbs([
+        'create' => 'xinzeng',
+        'edit' => 'bianji',
+    ]);
+}
+定制化请求方式完成后，注册资源路由如 Route::resource('wenzhang', 'PostController') 将会生成如下 URI：
+
+/wenzhang/xinzeng
+/wenzhang/{wenzhang}/bianji
+好吧，你可以看出来，我是用拼音的方式对资源路由进行了本地化设置。
+
+注:启用了定制化后，原来的create,edit的请求路由同样有效
+
+补充资源控制器
+如果需要在默认资源路由之外添加额外的路由到资源控制器，应该在调用 Route::resource 之前定义这些路由，否则，通过 resource 方法定义的路由可能无意中覆盖掉补充的额外路由：
+
+Route::get('posts/popular', 'PostController@method');
+Route::resource('posts', 'PostController');
