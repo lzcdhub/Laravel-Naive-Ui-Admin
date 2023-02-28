@@ -1,6 +1,6 @@
 # Laravel Naive Ui Admin
 
-![123](imgwelcome.png)
+![123](img/welcome.png)
 
 前后分离！！！现有：用户管理、权限管理、文章资讯管理！
 - 下载后 安装larave和npm的依赖包
