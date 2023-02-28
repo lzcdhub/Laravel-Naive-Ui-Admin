@@ -1,7 +1,7 @@
 # Laravel Naive Ui Admin
 前后分离！！！现有：用户管理、权限管理、文章资讯管理！
-    ![123](imgwelcome.png)
-    ![456](img/role.png)
+<p>![123](imgwelcome.png)</p>
+<p>![456](img/role.png)</p>
 - 下载后 安装larave和npm的依赖包
 - test.sql 是基础数据库 laravel数据库迁移完后 把test.sql导入进去
 
