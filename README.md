@@ -1,7 +1,7 @@
 # Laravel Naive Ui Admin
 
-使用的是 laravel9+NaiveUiAdmin 前后分离！！！
-现有：用户管理、权限管理、文章资讯管理！
+###### 使用的是 laravel9+NaiveUiAdmin 前后分离！！！
+###### 现有：用户管理、权限管理、文章资讯管理！
 
 - 下载后 安装larave和npm的依赖包
 - test.sql 是基础数据库 laravel数据库迁移完后 把test.sql导入进去
